@@ -87,7 +87,7 @@ def readline_thread():
 
 if __name__ == '__main__':
     # Setup MQTT
-    mqtt = paho.mqtt.client.Client()
+    mqtt = paho.mqtt.client.Client(MQTT_CLIENT_ID)
     mqtt.username_pw_set(username=MQTT_USER,password=MQTT_PASSWD)
     mqtt.will_set(f'{MQTT_TOPIC_PREFIX}/{DOCKER2MQTT_HOSTNAME}/status', 'offline', qos=MQTT_QOS, retain=True)
     mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_TIMEOUT)
@@ -108,7 +108,7 @@ if __name__ == '__main__':
         else:
             status_str = 'stopped'
             state_str = 'off'
-        
+
         register_container({
             'name': container_status['Names'],
             'image': container_status['Image'],
@@ -138,7 +138,7 @@ if __name__ == '__main__':
         except queue.Empty:
             # No data right now, just move along.
             continue
- 
+
         event = json.loads(line)
         if event['status'] not in WATCHED_EVENTS:
             continue
